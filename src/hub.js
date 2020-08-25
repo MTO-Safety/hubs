@@ -154,6 +154,11 @@ import "./systems/hubs-systems";
 import "./systems/capture-system";
 import "./systems/listed-media";
 import "./systems/linked-media";
+
+// CUSTOM
+import "./systems/digital-clock";
+//import "./systems/analog-clock";
+
 import { SOUND_CHAT_MESSAGE } from "./systems/sound-effects-system";
 
 import "./gltf-component-mappings";

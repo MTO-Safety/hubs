@@ -76,6 +76,13 @@ export const xforms = {
       return state;
     };
   },
+
+  //---------------CUSTOM------------
+  value: function value(frame, src, dest) {
+    frame.setValueType(dest.value, frame.get(src.value));
+    return frame.get(src.value);
+  }, //-----------------------------------
+
   falling: function falling(frame, src, dest, prevState) {
     frame.setValueType(dest.value, !frame.get(src.value) && prevState);
     return !!frame.get(src.value);

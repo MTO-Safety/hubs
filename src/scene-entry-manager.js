@@ -24,6 +24,8 @@ import { SOUND_ENTER_SCENE } from "./systems/sound-effects-system";
 
 const isIOS = AFRAME.utils.device.isIOS();
 
+import { AdjustableDeskSpawner } from "./adjustable_desk_spawner";
+
 export default class SceneEntryManager {
   constructor(hubChannel, authChannel, history) {
     this.hubChannel = hubChannel;
@@ -44,12 +46,12 @@ export default class SceneEntryManager {
       this.rightCursorController.components["cursor-controller"].enabled = false;
       this.leftCursorController.components["cursor-controller"].enabled = false;
     });
+    this.adjustableDeskSpawner = new AdjustableDeskSpawner();
   };
 
   hasEntered = () => {
     return this._entered;
   };
-
   enterScene = async (mediaStream, enterInVR, muteOnEntry) => {
     document.getElementById("viewing-camera").removeAttribute("scene-preview-camera");
 
@@ -125,6 +127,15 @@ export default class SceneEntryManager {
     if (muteOnEntry) {
       this.scene.emit("action_mute");
     }
+
+    // ----------------------- CUSTOM --------------
+    this.adjustableDeskSpawner.spawnOrFindDesks();
+    // ---------------------------------------------
+    // ----------------------- CUSTOM --------------
+    const clock = document.createElement("a-entity");
+    AFRAME.scenes[0].appendChild(clock);
+    clock.setAttribute("digital-clock");
+    // ---------------------------------------------
   };
 
   whenSceneLoaded = callback => {
@@ -140,6 +151,7 @@ export default class SceneEntryManager {
   };
 
   exitScene = () => {
+    console.log("TEST");
     this.scene.exitVR();
     if (NAF.connection.adapter && NAF.connection.adapter.localMediaStream) {
       NAF.connection.adapter.localMediaStream.getTracks().forEach(t => t.stop());
