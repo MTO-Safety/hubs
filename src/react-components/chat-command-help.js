@@ -10,27 +10,18 @@ export default class ChatCommandHelp extends Component {
     matchingPrefix: PropTypes.string,
     onTop: PropTypes.bool
   };
-
+  // CUSTOM ADDED commands : "height", "spawnImage", "distanceToScreen"
+  // Removed : "debug","vrstats","rename <new name>","audiomode"
   render() {
-    const commands = [
-      "leave",
-      "grow",
-      "shrink",
-      "duck",
-      "debug",
-      "vrstats",
-      "scene <scene url>",
-      "rename <new name>",
-      "audiomode"
-    ];
+    const commands = ["height", "distancetoscreen", "spawnimage", "leave"];
 
-    if (window.APP.hubChannel && window.APP.hubChannel.can("fly")) {
+    /* if (window.APP.hubChannel && window.APP.hubChannel.can("fly")) {
       commands.push("fly");
-    }
+    } 
 
     if (qsTruthy("video_capture")) {
       commands.push("capture [stop]");
-    }
+    }*/
 
     return (
       <div className={classNames({ [styles.commandHelp]: true, [styles.commandHelpOnTop]: this.props.onTop })}>

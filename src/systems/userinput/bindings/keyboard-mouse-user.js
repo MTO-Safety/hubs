@@ -470,7 +470,32 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       src: { value: "/var/notcontrol+7" },
       dest: { value: paths.actions.spawnEmoji6 },
       xform: xforms.rising
+    },
+    //---------------------------------------------------------------------------------------------------------
+    // |                                              Custom                                                  |
+    // --------------------------------------------------------------------------------------------------------
+    {
+      src: {
+        value: paths.device.keyboard.key("u")
+      },
+      dest: {
+        value: paths.actions.raiseNearestDesk
+      },
+      xform: xforms.value
+    },
+
+    {
+      src: {
+        value: paths.device.keyboard.key("n")
+      },
+      dest: {
+        value: paths.actions.lowerNearestDesk
+      },
+      xform: xforms.value
     }
+    //---------------------------------------------------------------------------------------------------------
+    // |                                              Custom                                                  |
+    // --------------------------------------------------------------------------------------------------------
     // Helpful bindings for debugging hands in 2D
     // {
     //   src: {},

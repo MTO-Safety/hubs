@@ -228,6 +228,8 @@ export async function spawnChatMessage(body, from) {
 }
 
 export default function ChatMessage(props) {
+  console.log("test");
+  console.log(props);
   return (
     <div className={props.className}>
       {props.maySpawn && (

@@ -260,6 +260,15 @@
     "invite.or_visit_modal": "or by visiting permalink",
     "invite.embed": "or embed on a page",
     "invite.embed-tip": "Please be mindful of where you embed a %app-name% room.\nGo to Room Settings to lock down permissions for this room.",
+
+
+
+    "commands.height":"Set specific avatar height between 1m - 2.5m, example : /height 1.8",
+    "commands.spawnimage":"'/spawnimage URL User'  URL to media; Username to spawn image in front of, leave empty to spawn in front of you.",
+    "commands.distancetoscreen": "Returns distance between a user and the users shared screen. Either '/distancetoscreen' if the screen belongs to you or '/distancetoscreen <username>' to get the distance from another user to their screen.",
+
+
+
     "commands.fly": "Toggle fly mode.",
     "commands.grow": "Increase your avatar's size.",
     "commands.shrink": "Decrease your avatar's size.",
