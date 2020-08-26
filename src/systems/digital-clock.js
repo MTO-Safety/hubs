@@ -17,20 +17,21 @@ Made by: https://github.com/kallekj, inspired by https://github.com/aelatgt/cust
 This code will render a digital clock, use the constants above to change the position etc of the clock.
 
 Everything is ordered in groups as follows:
-- clockGroup
-|- secGroup
-| |- secGroupLow
-| |- secGroupHigh
-|- minGroup
-| |- minGroupLow
-| |- minGroupHigh
-|- hourGroup
-| |- hourGroupLow
-| |- hourGroupHigh
++-- clockGroup
+|   +-- secGroup
+|   |   +-- secGroupLow
+|   |   +-- secGroupHigh
+|   +-- minGroup
+|   |   +-- minGroupLow
+|   |   +-- minGroupHigh
+|   +-- hourGroup
+|   |   +-- hourGroupLow
+|   |   +-- hourGroupHigh
 
 clockGroup is used to position the clock.
 
-This code uses the moment library for time data, you need to add it to your dependency list in package.json and install it, see: https://momentjs.com/docs/
+This code uses the moment library for time data, if you have cloned this repo and have followed the installation instructions, it should work.
+Otherwise you need to install it `npm install moment --save`, see: https://momentjs.com/docs/
 
 TODO:
   * Make it spawn on an object placed in Spoke for better user experience.
