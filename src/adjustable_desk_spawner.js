@@ -331,7 +331,7 @@ export class AdjustableDeskSpawner {
           // If of model EOW-c, hubs centers the object incorrectly so a slight offset has to be done
           if (desk.components["media-loader"].data.deskType.toLowerCase() == "eow-c") {
             desk.object3D.translateX(0.08);
-            desk.object3D.translateZ(0.21);
+            desk.object3D.translateZ(0.09);
           }
 
           desk.updateComponent("body-helper", { collisionFilterMask: 0 });
