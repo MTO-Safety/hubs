@@ -5,7 +5,7 @@ import { messages } from "./utils/i18n";
 import { SOUND_QUACK, SOUND_SPECIAL_QUACK } from "./systems/sound-effects-system";
 import ducky from "./assets/models/DuckyMesh.glb";
 import { spawnChatMessage, createInWorldLogMessage } from "./react-components/chat-message";
-
+import nextTick from "./utils/next-tick";
 let uiRoot;
 // Handles user-entered messages
 export default class MessageDispatch {
@@ -57,6 +57,7 @@ export default class MessageDispatch {
       el.setAttribute("media-loader", { src: url, fitToBox: false, resolve: true });
       el.setAttribute("networked", { template: "#interactable-media" });
       el.setAttribute("position", position);
+
       return el;
     }
 
@@ -235,6 +236,23 @@ export default class MessageDispatch {
         break;
 
       // -------------------------------------------------------------------------------------------------------------------
+      case "pres":
+        const mediaLoaders = AFRAME.scenes[0].querySelectorAll("[media-loader]");
+        for (let loader of mediaLoaders) {
+          if (loader.components["media-loader"].hasOwnProperty("data")) {
+            if (loader.components["media-loader"].data.hasOwnProperty("isPres")) {
+              if (loader.object3D.getWorldPosition().y < 0) {
+                loader.object3D.translateY(2.8);
+              } else if (loader.object3D.getWorldPosition().y > 0) {
+                loader.object3D.translateY(-2.8);
+              }
+              loader.object3D.matrixNeedsUpdate = true;
+              break;
+            }
+          }
+        }
+
+        break;
       case "grow":
         for (let i = 0; i < scales.length; i++) {
           if (scales[i] > curScale.x) {

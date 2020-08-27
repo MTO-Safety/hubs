@@ -48,7 +48,14 @@ export default class SceneEntryManager {
     });
     this.adjustableDeskSpawner = new AdjustableDeskSpawner();
   };
-
+  loadAssetFromURL = (url, position) => {
+    const el = document.createElement("a-entity");
+    AFRAME.scenes[0].appendChild(el);
+    el.setAttribute("media-loader", { src: url, fitToBox: false, resolve: true });
+    el.setAttribute("networked", { template: "#interactable-media" });
+    el.setAttribute("position", position);
+    return el;
+  };
   hasEntered = () => {
     return this._entered;
   };
@@ -136,6 +143,41 @@ export default class SceneEntryManager {
     AFRAME.scenes[0].appendChild(clock);
     clock.setAttribute("digital-clock");
     // ---------------------------------------------
+    const mediaLoaders = AFRAME.scenes[0].querySelectorAll("[media-loader]");
+    let presNotInScene = true;
+    // Check if presentation is in scene
+    for (let loader of mediaLoaders) {
+      if (loader.components["media-loader"].hasOwnProperty("data")) {
+        if (loader.components["media-loader"].data.isPres == true) {
+          presNotInScene = false;
+          loader.object3D.name = "SnapObject_pres";
+          loader.removeAttribute("draggable");
+          loader.removeAttribute("hoverable-visuals");
+          loader.removeAttribute("is-remote-hover-target");
+        }
+      }
+    }
+    if (presNotInScene) {
+      const presurl = "https://uploads-prod.reticulum.io/files/ece6b49b-116f-40ad-b6c9-7db48932de29.png";
+      // If not in scene, create it
+      let newpres = this.loadAssetFromURL(presurl, "3.8 1.4 3");
+      (async () => {
+        while (newpres.hasLoaded == false) {
+          await nextTick();
+        }
+        if (newpres.hasLoaded) {
+          newpres.updateComponent("media-loader", { isPres: true });
+          newpres.object3D.rotateY(-Math.PI / 2);
+          newpres.object3D.name = "SnapObject_pres";
+          newpres.object3D.scale.x = 4.5;
+          newpres.object3D.scale.y = 4.5;
+          newpres.object3D.scale.z = 4.5;
+          newpres.removeAttribute("draggable");
+          newpres.removeAttribute("hoverable-visuals");
+          newpres.removeAttribute("is-remote-hover-target");
+        }
+      })();
+    }
   };
 
   whenSceneLoaded = callback => {
