@@ -7,7 +7,7 @@ export class AdjustableDeskSpawner {
   init = () => {
     this.deskURLs = {
       b5: "https://uploads-prod.reticulum.io/files/ae0a49d5-4fa5-4087-a572-a104c470a320.glb",
-      "eow-c": "https://uploads-prod.reticulum.io/files/bc45839f-eb4b-4ff4-967f-04f33262ba79.glb"
+      "eow-c": "https://uploads-prod.reticulum.io/files/4acdc598-2ccf-4f5b-bd27-4dd8fde06831.glb"
     };
   };
   //"https://uploads-prod.reticulum.io/files/09a3d5f6-8e7d-4cd3-b243-76bcc391a710.glb"
