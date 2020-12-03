@@ -60,7 +60,7 @@ AFRAME.registerComponent("floaty-object", {
     // Get the media object, not necessary since it's just "this.el"
     const mediaObject = this.el;
     let closestObject = this.snapobjects[0];
-    for (let snapobject of this.snapobjects) {
+    for (const snapobject of this.snapobjects) {
       if (
         mediaObject.object3D.getWorldPosition().distanceTo(snapobject.object3D.getWorldPosition()) <
         mediaObject.object3D.getWorldPosition().distanceTo(closestObject.object3D.getWorldPosition())
@@ -238,7 +238,7 @@ AFRAME.registerComponent("floaty-object", {
           linearDamping: 0.95,
           linearSleepingThreshold: 0.1,
           angularSleepingThreshold: 0.1,
-          collisionFilterMask: COLLISION_LAYERS.HANDS
+          collisionFilterMask: COLLISION_LAYERS.HANDS | COLLISION_LAYERS.MEDIA_FRAMES
         });
 
         this._makeStaticWhenAtRest = true;
@@ -267,7 +267,7 @@ AFRAME.registerComponent("floaty-object", {
   onGrab() {
     this.el.setAttribute("body-helper", {
       gravity: { x: 0, y: 0, z: 0 },
-      collisionFilterMask: COLLISION_LAYERS.HANDS
+      collisionFilterMask: COLLISION_LAYERS.HANDS | COLLISION_LAYERS.MEDIA_FRAMES
     });
     this.setLocked(false);
   },

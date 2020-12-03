@@ -45,6 +45,8 @@ export default class SceneEntryManager {
     this.whenSceneLoaded(() => {
       this.rightCursorController.components["cursor-controller"].enabled = false;
       this.leftCursorController.components["cursor-controller"].enabled = false;
+
+      this._setupBlocking();
     });
     this.adjustableDeskSpawner = new AdjustableDeskSpawner();
   };
@@ -81,12 +83,11 @@ export default class SceneEntryManager {
     const waypointSystem = this.scene.systems["hubs-systems"].waypointSystem;
     waypointSystem.moveToSpawnPoint();
 
-    if (isMobile || forceEnableTouchscreen || qsTruthy("mobile")) {
+    if (isMobile || forceEnableTouchscreen || qsTruthy("force_enable_touchscreen")) {
       this.avatarRig.setAttribute("virtual-gamepad-controls", {});
     }
 
     this._setupPlayerRig();
-    this._setupBlocking();
     this._setupKicking();
     this._setupMedia(mediaStream);
     this._setupCamera();
@@ -146,7 +147,7 @@ export default class SceneEntryManager {
     const mediaLoaders = AFRAME.scenes[0].querySelectorAll("[media-loader]");
     let presNotInScene = true;
     // Check if presentation is in scene
-    for (let loader of mediaLoaders) {
+    for (const loader of mediaLoaders) {
       if (loader.components["media-loader"].hasOwnProperty("data")) {
         if (loader.components["media-loader"].data.isPres == true) {
           presNotInScene = false;
@@ -160,7 +161,7 @@ export default class SceneEntryManager {
     if (presNotInScene) {
       const presurl = "https://uploads-prod.reticulum.io/files/ece6b49b-116f-40ad-b6c9-7db48932de29.png";
       // If not in scene, create it
-      let newpres = this.loadAssetFromURL(presurl, "3.8 1.4 3");
+      const newpres = this.loadAssetFromURL(presurl, "3.8 1.4 3");
       (async () => {
         while (newpres.hasLoaded == false) {
           await nextTick();
@@ -670,13 +671,28 @@ export default class SceneEntryManager {
     }
 
     await new Promise(resolve => audioEl.addEventListener("canplay", resolve));
-    mediaStream.addTrack(
-      audioEl.captureStream
-        ? audioEl.captureStream().getAudioTracks()[0]
-        : audioEl.mozCaptureStream
-          ? audioEl.mozCaptureStream().getAudioTracks()[0]
-          : null
-    );
+
+    const audioStream = audioEl.captureStream
+      ? audioEl.captureStream()
+      : audioEl.mozCaptureStream
+        ? audioEl.mozCaptureStream()
+        : null;
+
+    if (audioStream) {
+      let audioVolume = Number(qs.get("audio_volume") || "1.0");
+      if (isNaN(audioVolume)) {
+        audioVolume = 1.0;
+      }
+      const audioContext = THREE.AudioContext.getContext();
+      const audioSource = audioContext.createMediaStreamSource(audioStream);
+      const audioDestination = audioContext.createMediaStreamDestination();
+      const gainNode = audioContext.createGain();
+      audioSource.connect(gainNode);
+      gainNode.connect(audioDestination);
+      gainNode.gain.value = audioVolume;
+      mediaStream.addTrack(audioDestination.stream.getAudioTracks()[0]);
+    }
+
     await NAF.connection.adapter.setLocalMediaStream(mediaStream);
     audioEl.play();
   };

@@ -390,7 +390,7 @@ export class CharacterControllerSystem {
       // Initiate the list of interactable desks
       const interactable_desks = [];
       // Extract the interactable desks from the list of floaty objects
-      for (let floaty_obj of floaty_objects) {
+      for (const floaty_obj of floaty_objects) {
         if (
           floaty_obj.components["media-loader"] != null &&
           floaty_obj.components["media-loader"].data.objectType != null
@@ -398,7 +398,7 @@ export class CharacterControllerSystem {
           if (floaty_obj.components["media-loader"].data.objectType == "Interactive_Desk") {
             if (floaty_obj.invisible_desk == null) {
               const scene_objects = AFRAME.scenes[0].querySelectorAll("[class]");
-              for (let e of scene_objects) {
+              for (const e of scene_objects) {
                 if (e.object3D != null) {
                   if (e.object3D.name == floaty_obj.components["media-loader"].data.invisibleDeskName) {
                     floaty_obj.invisible_desk = e;
@@ -420,7 +420,7 @@ export class CharacterControllerSystem {
         closestDesk = this.getClosestDesk(avatarPos, interactable_desks);
         // Get the position of the left avatar controller
 
-        let avatarLeftControllerPos = Object.assign(
+        const avatarLeftControllerPos = Object.assign(
           {},
           avatarRig.querySelector("#player-left-controller").object3D.getWorldPosition()
         );
@@ -496,7 +496,7 @@ export class CharacterControllerSystem {
         }
       }
 
-      let floaty_objs = document.querySelectorAll("[floaty-object]");
+      const floaty_objs = document.querySelectorAll("[floaty-object]");
 
       floaty_objs.forEach(floaty_obj => {
         if (floaty_obj.object3D != null) {

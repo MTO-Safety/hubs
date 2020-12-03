@@ -1,11 +1,10 @@
 import "./utils/configs";
 import { getAbsoluteHref } from "./utils/media-url-utils";
 import { isValidSceneUrl } from "./utils/scene-url-utils";
-import { messages } from "./utils/i18n";
+import { getMessages } from "./utils/i18n";
+import { spawnChatMessage } from "./react-components/chat-message";
 import { SOUND_QUACK, SOUND_SPECIAL_QUACK } from "./systems/sound-effects-system";
 import ducky from "./assets/models/DuckyMesh.glb";
-import { spawnChatMessage, createInWorldLogMessage } from "./react-components/chat-message";
-import nextTick from "./utils/next-tick";
 let uiRoot;
 // Handles user-entered messages
 export default class MessageDispatch {
@@ -72,8 +71,6 @@ export default class MessageDispatch {
 
     function attachObjToAvatar(obj, avatar, avatarPov) {
       NAF.utils.getNetworkedEntity(obj).then(networkedEl => {
-        const mine = NAF.utils.isMine(networkedEl);
-        if (!mine) var owned = NAF.utils.takeOwnership(networkedEl);
         // Set the position of the media at the same coordinates as the avatar
         networkedEl.object3D.position.copy(avatar.object3D.position);
         // Increase the height to 1.8
@@ -182,9 +179,13 @@ export default class MessageDispatch {
       // --------------------------------------------------------------------------------------------------------------------
       // -----------------------------------------CUSTOM CODE TO LET ONE SEE DISTANCE TO SHARED SCREENS----------------------
       case "distancetoscreen":
+        // eslint-disable-next-line no-case-declarations
         const media_loaders = AFRAME.scenes[0].querySelectorAll("[media-video]");
+        // eslint-disable-next-line no-case-declarations
         let selectedScreen = null;
+        // eslint-disable-next-line no-case-declarations
         let selectedAvatar = avatarRig;
+        // eslint-disable-next-line no-case-declarations
         let selectedAvatarName = "";
         // If user desires to get distance between another user and their screen
         if (args[0]) {
@@ -196,7 +197,7 @@ export default class MessageDispatch {
             });
             break;
           }
-          for (let media_loader of media_loaders) {
+          for (const media_loader of media_loaders) {
             // Find the screen belonging to the user
             const creatorID = NAF.utils.getCreator(media_loader);
             if (selectedAvatar.components["player-info"].playerSessionId === creatorID) {
@@ -207,7 +208,7 @@ export default class MessageDispatch {
         }
         // If user desires to get distance to their own screen
         else {
-          for (let media_loader of media_loaders) {
+          for (const media_loader of media_loaders) {
             const creatorID = NAF.utils.getCreator(media_loader);
             if (selectedAvatar.components["player-info"].playerSessionId === creatorID) {
               selectedScreen = media_loader;
@@ -216,11 +217,13 @@ export default class MessageDispatch {
         }
         if (selectedScreen == null || selectedAvatar == null) break;
         // To get the correnct height, use the camera of the user
+        // eslint-disable-next-line no-case-declarations
         let selecterAvatarCamera;
-        for (let child of selectedAvatar.getChildren()) {
+        for (const child of selectedAvatar.getChildren()) {
           if (child.className == "camera") selecterAvatarCamera = child;
         }
         // Calculate the distance and turn it into centimeters
+        // eslint-disable-next-line no-case-declarations
         let distance = selecterAvatarCamera.object3D
           .getWorldPosition()
           .distanceTo(selectedScreen.object3D.getWorldPosition());
@@ -237,8 +240,9 @@ export default class MessageDispatch {
 
       // -------------------------------------------------------------------------------------------------------------------
       case "pres":
+        // eslint-disable-next-line no-case-declarations
         const mediaLoaders = AFRAME.scenes[0].querySelectorAll("[media-loader]");
-        for (let loader of mediaLoaders) {
+        for (const loader of mediaLoaders) {
           if (loader.components["media-loader"].hasOwnProperty("data")) {
             if (loader.components["media-loader"].data.hasOwnProperty("isPres")) {
               if (loader.object3D.getWorldPosition().y < 0) {
@@ -300,7 +304,7 @@ export default class MessageDispatch {
               this.addToPresenceLog({ type: "log", body: "You do not have permission to change the scene." });
             }
           } else {
-            this.addToPresenceLog({ type: "log", body: messages["invalid-scene-url"] });
+            this.addToPresenceLog({ type: "log", body: getMessages()["invalid-scene-url"] });
           }
         } else if (this.hubChannel.canOrWillIfCreator("update_hub")) {
           this.mediaSearchStore.sourceNavigateWithNoNav("scenes", "use");
@@ -341,6 +345,30 @@ export default class MessageDispatch {
             preferences: { audioOutputMode: shouldEnablePositionalAudio ? "panner" : "audio" }
           });
           this.log(`Positional Audio ${shouldEnablePositionalAudio ? "enabled" : "disabled"}.`);
+        }
+        break;
+      case "audioNormalization":
+        {
+          if (args.length === 1) {
+            const factor = Number(args[0]);
+            if (!isNaN(factor)) {
+              const effectiveFactor = Math.max(0.0, Math.min(255.0, factor));
+              window.APP.store.update({
+                preferences: { audioNormalization: effectiveFactor }
+              });
+              if (factor) {
+                this.log(`audioNormalization factor is set to ${effectiveFactor}.`);
+              } else {
+                this.log("audioNormalization is disabled.");
+              }
+            } else {
+              this.log("audioNormalization command needs a valid number parameter.");
+            }
+          } else {
+            this.log(
+              "audioNormalization command needs a base volume number between 0 [no normalization] and 255. Default is 0. The recommended value is 4, if you would like to enable normalization."
+            );
+          }
         }
         break;
     }

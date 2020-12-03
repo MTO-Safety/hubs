@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import styles from "../assets/stylesheets/chat-command-help.scss";
 import classNames from "classnames";
 import { FormattedMessage } from "react-intl";
-import qsTruthy from "../utils/qs_truthy";
 
 export default class ChatCommandHelp extends Component {
   static propTypes = {
@@ -11,9 +10,22 @@ export default class ChatCommandHelp extends Component {
     onTop: PropTypes.bool
   };
   // CUSTOM ADDED commands : "height", "spawnImage", "distanceToScreen"
-  // Removed : "debug","vrstats","rename <new name>","audiomode"
   render() {
-    const commands = ["height", "distancetoscreen", "spawnimage", "leave"];
+    const commands = [
+      "height",
+      "distancetoscreen",
+      "spawnimage",
+      "leave",
+      "grow",
+      "shrink",
+      "duck",
+      "debug",
+      "vrstats",
+      "scene <scene url>",
+      "rename <new name>",
+      "audiomode",
+      "audioNormalization <factor>"
+    ];
 
     /* if (window.APP.hubChannel && window.APP.hubChannel.can("fly")) {
       commands.push("fly");
